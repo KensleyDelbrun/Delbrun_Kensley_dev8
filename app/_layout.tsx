@@ -1,3 +1,6 @@
+// Import the URL polyfill to ensure Supabase works correctly in a React Native environment.
+import 'react-native-url-polyfill/auto';
+
 import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
@@ -6,7 +9,6 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { AppearanceProvider } from '@/contexts/AppearanceContext';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
-import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,6 +34,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
+    // Correction: Utilisation de l'alias de chemin `@/` pour une résolution fiable.
     'Inter-Regular': require('@/assets/fonts/Inter-Regular.ttf'),
     'Inter-Medium': require('@/assets/fonts/Inter-Medium.ttf'),
     'Inter-SemiBold': require('@/assets/fonts/Inter-SemiBold.ttf'),
@@ -53,14 +56,12 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <LanguageProvider>
-          <AppearanceProvider>
-            <RootLayoutNav />
-          </AppearanceProvider>
-        </LanguageProvider>
-      </AuthProvider>
-    </ErrorBoundary>
+    <AuthProvider>
+      <LanguageProvider>
+        <AppearanceProvider>
+          <RootLayoutNav />
+        </AppearanceProvider>
+      </LanguageProvider>
+    </AuthProvider>
   );
 }

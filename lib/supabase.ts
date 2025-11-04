@@ -1,9 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
+import 'react-native-url-polyfill/auto'; // Import this to handle URL polyfill issues
 
-const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl || process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// --- AJOUT DE LOGS DE DÉBOGAGE ---
+console.log('--- Initialisation du client Supabase ---');
+console.log('Supabase URL lue:', supabaseUrl ? `...${supabaseUrl.slice(-10)}` : 'URL MANQUANTE !');
+console.log('Supabase Anon Key lue:', supabaseAnonKey ? `...${supabaseAnonKey.slice(-10)}` : 'CLÉ MANQUANTE !');
+// ------------------------------------
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('ERREUR CRITIQUE: URL ou clé anonyme Supabase manquante. Vérifiez votre fichier .env et redémarrez le bundler.');
+  throw new Error('Supabase URL or Anon Key is missing. Please check your .env file.');
+}
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -13,6 +24,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: false,
   },
 });
+
+console.log('Client Supabase initialisé avec succès.');
 
 export type Database = {
   public: {
